@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>About Portrait Sync — Luffy Editz</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #0d0e12;
+        color: #f4f4f6;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 24px;
+      }
+      .card {
+        background: #171821;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 24px;
+        max-width: 480px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      }
+      .img-wrap {
+        width: 100%;
+        aspect-ratio: 4/5;
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: #000;
+        position: relative;
+      }
+      .img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      h2 {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+      }
+      p {
+        font-size: 0.875rem;
+        color: #a1a1aa;
+        margin-bottom: 20px;
+      }
+      .status {
+        font-size: 0.8rem;
+        font-family: monospace;
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        margin-bottom: 16px;
+        display: inline-block;
+      }
+      .btn {
+        background: #e11d48;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        width: 100%;
+        transition: background 0.2s;
+      }
+      .btn:hover {
+        background: #be123c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="img-wrap">
+        <img id="portrait" src="nk.jpeg" alt="Luffy Editz — nk.jpeg" crossorigin="anonymous" />
+      </div>
+      <h2>Luffy Editz Portrait</h2>
+      <p>Uploaded file: <code>nk.jpeg</code></p>
+      <div id="status" class="status">Syncing to About Page...</div>
+      <button class="btn" id="syncBtn" onclick="syncToApp()">Apply to Portfolio About Page</button>
+    </div>
+
+    <canvas id="canvas" style="display: none"></canvas>
+
+    <script>
+      async function syncToApp() {
+        const img = document.getElementById("portrait");
+        const status = document.getElementById("status");
+        status.innerText = "Processing image...";
+
+        try {
+          const canvas = document.getElementById("canvas");
+          canvas.width = img.naturalWidth || 1080;
+          canvas.height = img.naturalHeight || 1350;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.95);
+
+          // Save to localStorage for instant local preview
+          try {
+            localStorage.setItem("luffy_creator_portrait", dataUrl);
+          } catch (e) {}
+
+          // Send to dev server
+          const res = await fetch("/api/save-portrait", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ base64: dataUrl }),
+          });
+
+          if (res.ok) {
+            status.innerText = "✓ Synced successfully! Refresh portfolio.";
+            status.style.color = "#34d399";
+          } else {
+            status.innerText = "Saved to local cache!";
+          }
+        } catch (err) {
+          status.innerText = "Ready. Click Apply to confirm.";
+        }
+      }
+
+      window.addEventListener("load", () => {
+        setTimeout(syncToApp, 800);
+      });
+    </script>
+  </body>
+</html>

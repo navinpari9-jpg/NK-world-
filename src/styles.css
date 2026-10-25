@@ -1,0 +1,209 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system — "Control Room"
+ * Dark creator-studio theme: near-black ink surfaces, signal-red primary,
+ * cyan telemetry accent, Anton display / Inter body / JetBrains Mono labels.
+ */
+
+@theme {
+  --font-display: "Anton", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --ease-studio: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --animate-rise: rise 0.7s cubic-bezier(0.32, 0.72, 0, 1) both;
+  --animate-fade: fade 0.9s cubic-bezier(0.32, 0.72, 0, 1) both;
+  --animate-pulse-dot: pulse-dot 1.6s ease-in-out infinite;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.4;
+      transform: scale(0.85);
+    }
+  }
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(0.05 0.004 260);
+  --foreground: oklch(0.97 0.003 260);
+  --card: oklch(0.1 0.006 260);
+  --card-foreground: oklch(0.97 0.003 260);
+  --popover: oklch(0.1 0.006 260);
+  --popover-foreground: oklch(0.97 0.003 260);
+  --primary: oklch(0.63 0.245 27);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.14 0.008 260);
+  --secondary-foreground: oklch(0.97 0.003 260);
+  --muted: oklch(0.14 0.008 260);
+  --muted-foreground: oklch(0.65 0.01 260);
+  --accent: oklch(0.82 0.12 205);
+  --accent-foreground: oklch(0.06 0.005 260);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 9%);
+  --ring: oklch(0.82 0.12 205);
+  --surface: oklch(0.09 0.006 260);
+  --surface-2: oklch(0.13 0.008 260);
+}
+
+/* Frosted obsidian panels */
+@utility glass {
+  background: linear-gradient(145deg, oklch(1 0 0 / 4.5%), oklch(1 0 0 / 1.5%));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid oklch(1 0 0 / 9%);
+}
+
+@utility glass-strong {
+  background: linear-gradient(145deg, oklch(0.1 0.005 260 / 85%), oklch(0.05 0.004 260 / 92%));
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid oklch(1 0 0 / 12%);
+}
+
+/* Signal glows */
+@utility glow-primary {
+  box-shadow:
+    0 0 40px oklch(0.63 0.245 27 / 22%),
+    0 0 80px oklch(0.63 0.245 27 / 8%);
+}
+
+@utility glow-accent {
+  box-shadow: 0 0 35px oklch(0.82 0.12 205 / 12%);
+}
+
+/* Style 1: Obsidian Spotlight + Micro Dot Matrix (Default) */
+@utility grid-bg {
+  background-color: #040406;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 255, 255, 0.07), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 85% 20%, rgba(225, 29, 72, 0.06), transparent 65%),
+    radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    28px 28px;
+}
+
+/* Style 2: Carbon Architectural Diagonal Weave */
+@utility bg-carbon-style {
+  background-color: #030304;
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(225, 29, 72, 0.08), transparent 55%),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.025) 0px,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px,
+      transparent 10px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.015) 0px,
+      rgba(255, 255, 255, 0.015) 1px,
+      transparent 1px,
+      transparent 10px
+    );
+}
+
+/* Style 3: Noir Studio Light Beams */
+@utility bg-noir-beams {
+  background-color: #020203;
+  background-image:
+    conic-gradient(
+      from 160deg at 50% -15%,
+      transparent 0deg,
+      rgba(255, 255, 255, 0.045) 18deg,
+      transparent 38deg,
+      rgba(225, 29, 72, 0.04) 52deg,
+      transparent 75deg
+    ),
+    radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-size:
+    100% 100%,
+    36px 36px;
+}
+
+/* Style 4: Pure OLED Void Black */
+@utility bg-oled-void {
+  background-color: #000000;
+  background-image: radial-gradient(
+    circle at 50% 0%,
+    rgba(255, 255, 255, 0.035) 0%,
+    transparent 60%
+  );
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: #030305;
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+  }
+}
