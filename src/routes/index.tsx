@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import {
   RefreshCw,
@@ -13,8 +13,6 @@ import {
   ExternalLink,
   Flame,
   CheckCircle2,
-  Camera,
-  Upload,
 } from "lucide-react";
 
 import { getYouTubeStats, type YouTubeVideo } from "@/lib/youtube.functions";
@@ -142,29 +140,30 @@ function RealtimeTelemetryBar({
   };
 
   const styles: Array<{ id: BackdropStyle; label: string }> = [
-    { id: "noir-beams", label: "Noir Beams" },
-    { id: "carbon", label: "Carbon" },
-    { id: "obsidian", label: "Matrix" },
-    { id: "oled", label: "OLED Black" },
+    { id: "noir-beams", label: "Luffy Cinema" },
+    { id: "carbon", label: "Luffy Vivid" },
+    { id: "obsidian", label: "Luffy Noir" },
+    { id: "oled", label: "Dark Minimal" },
   ];
 
   return (
     <div className="w-full border-b border-border/60 bg-black/80 backdrop-blur-md sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-6 py-2 flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1.5 font-mono text-emerald-400 font-medium">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 flex items-center justify-between gap-2 sm:gap-3 text-xs">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <span className="flex items-center gap-1.5 font-mono text-emerald-400 font-medium text-[11px] sm:text-xs shrink-0">
             <span className="relative flex size-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full size-2 bg-emerald-500" />
             </span>
-            REALTIME SYNC ACTIVE
+            <span className="hidden xs:inline">REALTIME SYNC ACTIVE</span>
+            <span className="xs:hidden">LIVE SYNC</span>
           </span>
           <span className="text-border hidden sm:inline">|</span>
-          <span className="font-mono text-muted-foreground hidden sm:inline">
+          <span className="font-mono text-muted-foreground hidden sm:inline truncate">
             Source: <span className="text-foreground">@LuffyEditzInsta</span>
           </span>
           <span className="text-border hidden md:inline">|</span>
-          <span className="font-mono text-muted-foreground hidden md:inline">
+          <span className="font-mono text-muted-foreground hidden md:inline shrink-0">
             Updated:{" "}
             <span className="text-accent font-medium">
               {secondsAgo === 0 ? "just now" : `${secondsAgo}s ago`}
@@ -172,7 +171,7 @@ function RealtimeTelemetryBar({
           </span>
         </div>
 
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="flex items-center gap-2 ml-auto shrink-0">
           <div className="hidden lg:flex items-center gap-1 p-0.5 rounded-md bg-white/5 border border-white/10 mr-2">
             <span className="px-2 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
               Backdrop:
@@ -196,7 +195,7 @@ function RealtimeTelemetryBar({
           <button
             onClick={handleManualSync}
             disabled={isFetching}
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md glass hover:bg-accent/15 text-foreground hover:text-accent font-mono text-[11px] font-medium transition-colors cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-md glass hover:bg-accent/15 text-foreground hover:text-accent font-mono text-[11px] font-medium transition-colors cursor-pointer disabled:opacity-50"
             title="Fetch latest stats and videos from YouTube"
           >
             <RefreshCw className={`size-3 ${isFetching ? "animate-spin text-accent" : ""}`} />
@@ -211,12 +210,14 @@ function RealtimeTelemetryBar({
 function Nav({ onSync, isFetching }: { onSync: () => void; isFetching: boolean }) {
   return (
     <nav className="glass-strong">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="size-9 rounded-lg bg-primary grid place-items-center glow-primary">
-            <span className="font-display text-lg text-primary-foreground">L</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <div className="size-8 sm:size-9 rounded-lg bg-primary grid place-items-center glow-primary shrink-0">
+            <span className="font-display text-base sm:text-lg text-primary-foreground">L</span>
           </div>
-          <span className="font-display text-xl tracking-tight">LUFFY EDITZ</span>
+          <span className="font-display text-lg sm:text-xl tracking-tight truncate">
+            LUFFY EDITZ
+          </span>
           <span className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-[10px] font-mono uppercase tracking-wider">
             <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse-dot" />
             Live Synced
@@ -239,7 +240,7 @@ function Nav({ onSync, isFetching }: { onSync: () => void; isFetching: boolean }
             Platforms
           </a>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button
             onClick={onSync}
             disabled={isFetching}
@@ -252,11 +253,30 @@ function Nav({ onSync, isFetching }: { onSync: () => void; isFetching: boolean }
             href={YOUTUBE_URL}
             target="_blank"
             rel="noreferrer"
-            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm"
+            className="px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-primary text-primary-foreground text-xs sm:text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm"
           >
             Subscribe
           </a>
         </div>
+      </div>
+
+      {/* Mobile Navigation Links */}
+      <div className="md:hidden border-t border-border/60 bg-black/50 px-4 py-2 flex items-center justify-around text-xs font-mono text-muted-foreground">
+        <a href="#videos" className="hover:text-foreground transition-colors py-1">
+          Live Uploads
+        </a>
+        <span className="text-border">•</span>
+        <Link
+          to="/about"
+          className="text-foreground hover:text-primary transition-colors flex items-center gap-1.5 py-1 font-medium"
+        >
+          <span>About Navin</span>
+          <span className="text-[9px] px-1.5 py-0.5 rounded bg-primary/20 text-primary">Page</span>
+        </Link>
+        <span className="text-border">•</span>
+        <a href="#platforms" className="hover:text-foreground transition-colors py-1">
+          Platforms
+        </a>
       </div>
     </nav>
   );
@@ -272,45 +292,47 @@ function Hero({
   avatarUrl?: string | undefined;
 }) {
   return (
-    <section className="relative max-w-7xl mx-auto px-6 pt-12 pb-12">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+    <section className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-10 sm:pb-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
         <div className="lg:col-span-7">
-          <div className="flex items-center gap-3 mb-6 animate-rise">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-6 animate-rise">
             {avatarUrl ? (
               <img
                 src={avatarUrl}
                 alt="Luffy Editz"
-                className="size-7 rounded-full border border-primary/50 object-cover"
+                className="size-6 sm:size-7 rounded-full border border-primary/50 object-cover shrink-0"
               />
             ) : null}
-            <span className="font-mono text-xs text-accent uppercase tracking-[0.2em]">
+            <span className="font-mono text-[11px] sm:text-xs text-accent uppercase tracking-[0.15em] sm:tracking-[0.2em]">
               Real-Time Creator Studio
             </span>
-            <span className="h-px flex-1 bg-border" />
-            <span className="font-mono text-xs text-muted-foreground">@LuffyEditzInsta</span>
+            <span className="h-px flex-1 bg-border hidden sm:block" />
+            <span className="font-mono text-[11px] sm:text-xs text-muted-foreground">
+              @LuffyEditzInsta
+            </span>
           </div>
-          <h1 className="font-display text-[clamp(3.5rem,10vw,8rem)] leading-[0.9] tracking-tight text-balance animate-rise [animation-delay:80ms]">
+          <h1 className="font-display text-[clamp(3rem,12vw,8rem)] leading-[0.9] tracking-tight text-balance animate-rise [animation-delay:80ms]">
             LUFFY
             <br />
             <span className="text-primary">EDITZ</span>
           </h1>
-          <p className="mt-6 max-w-[48ch] text-lg text-muted-foreground text-pretty animate-rise [animation-delay:160ms]">
+          <p className="mt-4 sm:mt-6 max-w-[48ch] text-base sm:text-lg text-muted-foreground text-pretty animate-rise [animation-delay:160ms]">
             Video editor and content creator. Pacing, rhythm, and frame-by-frame cuts — synced live
             with real-time subscriber and video telemetry.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3 animate-rise [animation-delay:240ms]">
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row flex-wrap gap-3 animate-rise [animation-delay:240ms]">
             <a
               href={YOUTUBE_URL}
               target="_blank"
               rel="noreferrer"
-              className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors inline-flex items-center gap-2"
+              className="w-full sm:w-auto justify-center px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors inline-flex items-center gap-2"
             >
               <span>Subscribe on YouTube</span>
               <ExternalLink className="size-4" />
             </a>
             <a
               href="#videos"
-              className="px-6 py-3 rounded-lg glass text-foreground font-medium hover:bg-foreground/10 transition-colors"
+              className="w-full sm:w-auto text-center px-6 py-3 rounded-lg glass text-foreground font-medium hover:bg-foreground/10 transition-colors"
             >
               Browse live uploads
             </a>
@@ -318,13 +340,13 @@ function Hero({
         </div>
 
         <div className="lg:col-span-5 animate-fade [animation-delay:320ms]">
-          <div className="glass rounded-2xl p-4 glow-accent">
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-1.5">
-                <Radio className="size-3 text-primary animate-pulse" />
-                Latest Synchronized Drop
+          <div className="glass rounded-2xl p-3.5 sm:p-4 glow-accent">
+            <div className="flex items-center justify-between mb-3 gap-2">
+              <span className="font-mono text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] text-muted-foreground flex items-center gap-1.5 truncate">
+                <Radio className="size-3 text-primary animate-pulse shrink-0" />
+                <span className="truncate">Latest Synchronized Drop</span>
               </span>
-              <span className="flex items-center gap-1.5 text-[10px] font-mono text-emerald-400 font-semibold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/20">
+              <span className="flex items-center gap-1.5 text-[10px] font-mono text-emerald-400 font-semibold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/20 shrink-0">
                 <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse-dot" />
                 LIVE
               </span>
@@ -362,7 +384,7 @@ function Hero({
 
               {/* Center Play Button */}
               <div className="absolute inset-0 grid place-items-center">
-                <span className="size-12 rounded-full bg-primary text-primary-foreground grid place-items-center glow-primary group-hover:scale-110 transition-transform">
+                <span className="size-11 sm:size-12 rounded-full bg-primary text-primary-foreground grid place-items-center glow-primary group-hover:scale-110 transition-transform">
                   <Play className="size-5 fill-current ml-0.5" />
                 </span>
               </div>
@@ -391,8 +413,8 @@ function Hero({
                   {latestVideo?.title ?? "POV: When I Give Her Advice 😂❤️"}
                 </p>
                 <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
-                  <CheckCircle2 className="size-3 text-emerald-400" />
-                  Live synced from YouTube channel
+                  <CheckCircle2 className="size-3 text-emerald-400 shrink-0" />
+                  <span className="truncate">Live synced from YouTube channel</span>
                 </p>
               </div>
               <button
@@ -455,27 +477,29 @@ function StatsStrip({
   ];
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-6">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
       <div className="glass rounded-2xl grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-border">
         {stats.map((stat, i) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className={`p-6 animate-rise ${statDelays[i]}`}>
-              <div className="flex items-center justify-between mb-2">
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            <div key={stat.label} className={`p-4 sm:p-6 min-w-0 animate-rise ${statDelays[i]}`}>
+              <div className="flex items-center justify-between mb-2 gap-1">
+                <p className="font-mono text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] text-muted-foreground truncate">
                   {stat.label}
                 </p>
-                <Icon className="size-4 text-muted-foreground/60" />
+                <Icon className="size-3.5 sm:size-4 text-muted-foreground/60 shrink-0" />
               </div>
-              <p className="font-display text-4xl tracking-tight text-foreground">{stat.value}</p>
-              <div className="text-xs text-accent mt-2 flex items-center gap-1.5 font-mono">
+              <p className="font-display text-2xl sm:text-3xl lg:text-4xl tracking-tight text-foreground truncate">
+                {stat.value}
+              </p>
+              <div className="text-[11px] sm:text-xs text-accent mt-2 flex items-center gap-1.5 font-mono">
                 {isLive && (
-                  <span className="relative flex size-1.5">
+                  <span className="relative flex size-1.5 shrink-0">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                     <span className="relative inline-flex rounded-full size-1.5 bg-emerald-500" />
                   </span>
                 )}
-                <span>{stat.note}</span>
+                <span className="truncate">{stat.note}</span>
               </div>
             </div>
           );
@@ -507,8 +531,8 @@ function FeaturedVideos({
   }, [videos, filter]);
 
   return (
-    <section id="videos" className="max-w-7xl mx-auto px-6 py-16">
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+    <section id="videos" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="font-mono text-xs text-accent uppercase tracking-[0.2em]">
@@ -519,16 +543,16 @@ function FeaturedVideos({
               Realtime Synced
             </span>
           </div>
-          <h2 className="font-display text-4xl sm:text-5xl tracking-tight text-balance">
+          <h2 className="font-display text-3xl sm:text-5xl tracking-tight text-balance">
             Channel Uploads
           </h2>
         </div>
 
         {/* Filter controls */}
-        <div className="flex items-center gap-2 bg-surface p-1 rounded-xl border border-border">
+        <div className="grid grid-cols-3 sm:flex items-center gap-1.5 sm:gap-2 bg-surface p-1 rounded-xl border border-border w-full sm:w-auto">
           <button
             onClick={() => setFilter("all")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors cursor-pointer ${
+            className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-mono transition-colors cursor-pointer text-center ${
               filter === "all"
                 ? "bg-primary text-primary-foreground font-semibold"
                 : "text-muted-foreground hover:text-foreground"
@@ -538,7 +562,7 @@ function FeaturedVideos({
           </button>
           <button
             onClick={() => setFilter("shorts")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors cursor-pointer ${
+            className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-mono transition-colors cursor-pointer text-center ${
               filter === "shorts"
                 ? "bg-primary text-primary-foreground font-semibold"
                 : "text-muted-foreground hover:text-foreground"
@@ -548,7 +572,7 @@ function FeaturedVideos({
           </button>
           <button
             onClick={() => setFilter("trending")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors cursor-pointer ${
+            className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-mono transition-colors cursor-pointer text-center truncate ${
               filter === "trending"
                 ? "bg-primary text-primary-foreground font-semibold"
                 : "text-muted-foreground hover:text-foreground"
@@ -560,7 +584,7 @@ function FeaturedVideos({
       </div>
 
       {videos.length === 0 ? (
-        <div className="glass rounded-2xl p-12 text-center">
+        <div className="glass rounded-2xl p-8 sm:p-12 text-center">
           <RefreshCw
             className={`size-8 mx-auto text-muted-foreground ${isFetching ? "animate-spin" : ""}`}
           />
@@ -569,7 +593,7 @@ function FeaturedVideos({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {filteredVideos.map((video, idx) => (
             <div
               key={video.id || idx}
@@ -638,8 +662,6 @@ function FeaturedVideos({
 function About() {
   const [imageSrc, setImageSrc] = useState<string>("/studio-editor.jpg");
   const [portraitStyle, setPortraitStyle] = useState<PortraitStyle>("noir-spotlight");
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const cached = localStorage.getItem("luffy_creator_portrait");
@@ -648,75 +670,12 @@ function About() {
     }
   }, []);
 
-  const handleProcessFile = (file: File) => {
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please drop or select a valid image file");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64 = e.target?.result as string;
-      if (base64) {
-        setImageSrc(base64);
-        try {
-          localStorage.setItem("luffy_creator_portrait", base64);
-        } catch (storageErr) {
-          console.warn("Could not save to localStorage", storageErr);
-        }
-        toast.info("Applying exact image...");
-
-        try {
-          const res = await fetch("/api/save-portrait", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ base64 }),
-          });
-          if (res.ok) {
-            toast.success("Exact image replaced and saved!");
-          } else {
-            toast.success("Exact portrait applied!");
-          }
-        } catch {
-          toast.success("Exact portrait applied!");
-        }
-      }
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const onDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) handleProcessFile(file);
-  };
-
   return (
-    <section id="about" className="max-w-7xl mx-auto px-6 py-16">
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleProcessFile(file);
-        }}
-      />
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <div className="lg:col-span-4">
+    <section id="about" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        <div className="lg:col-span-4 max-w-sm mx-auto lg:max-w-none w-full">
           <div className="relative group">
-            <div
-              onDragOver={(e) => {
-                e.preventDefault();
-                setIsDragging(true);
-              }}
-              onDragLeave={() => setIsDragging(false)}
-              onDrop={onDrop}
-              className={`w-full aspect-[4/5] rounded-2xl overflow-hidden bg-black outline-1 -outline-offset-1 outline-white/15 relative shadow-2xl transition-all ${
-                isDragging ? "ring-4 ring-primary ring-offset-4 ring-offset-background" : ""
-              }`}
-            >
+            <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden bg-black outline-1 -outline-offset-1 outline-white/15 relative shadow-2xl transition-all">
               {/* Dynamic Black Studio Backdrop Layer */}
               <div
                 className={`pointer-events-none absolute inset-0 z-0 ${
@@ -761,52 +720,35 @@ function About() {
 
               <div className="pointer-events-none absolute inset-0 z-10 ring-1 ring-inset ring-white/10 rounded-2xl" />
 
-              {/* Hover replace button */}
-              <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="px-2.5 py-1 rounded-lg bg-black/85 hover:bg-black text-white text-[11px] font-mono border border-white/20 flex items-center gap-1 shadow-md backdrop-blur-md cursor-pointer transition-colors"
-                  title="Upload or replace with exact photo"
-                >
-                  <Camera className="size-3 text-accent" />
-                  <span>Upload Photo</span>
-                </button>
-              </div>
-
-              {/* Drag over overlay */}
-              {isDragging && (
-                <div className="absolute inset-0 bg-black/85 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-30">
-                  <Upload className="size-8 text-primary animate-bounce mb-2" />
-                  <p className="font-display text-lg text-white">Drop Photo Here</p>
-                  <p className="text-[11px] text-muted-foreground font-mono">
-                    Applies dark studio grading
-                  </p>
-                </div>
-              )}
-
               {/* Bottom floating badge info */}
               <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between text-xs font-mono">
                 <span className="px-3 py-1 rounded-md bg-black/80 backdrop-blur-md border border-white/10 text-zinc-200 flex items-center gap-1.5 shadow-md">
                   <span className="size-1.5 rounded-full bg-primary animate-pulse" />
                   Navin
                 </span>
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="px-2.5 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white font-semibold border border-white/15 text-[11px] flex items-center gap-1 cursor-pointer transition-colors backdrop-blur-md"
-                >
-                  <Camera className="size-3" />
-                  <span>Change</span>
-                </button>
+                <span className="px-2.5 py-1 rounded-md bg-black/75 border border-white/15 text-zinc-400 text-[11px] backdrop-blur-md">
+                  @LuffyEditzInsta
+                </span>
               </div>
             </div>
 
             {/* Black Studio Style Controls */}
             <div className="mt-3 p-2.5 rounded-xl bg-black/80 border border-white/10 backdrop-blur-md space-y-2">
-              <div className="flex items-center justify-between text-[10px] font-mono text-muted-foreground px-1">
-                <span>BLACK STYLE</span>
+              <div className="flex flex-wrap items-center justify-between gap-1.5 text-[10px] font-mono text-muted-foreground px-1">
+                <span>VISUAL PRESET</span>
                 <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setImageSrc("/assets/aistudio/image_759ccab2.png")}
+                    className={`hover:text-white transition-colors cursor-pointer ${
+                      imageSrc === "/assets/aistudio/image_759ccab2.png"
+                        ? "text-primary font-semibold"
+                        : ""
+                    }`}
+                  >
+                    Luffy Art
+                  </button>
+                  <span>·</span>
                   <button
                     type="button"
                     onClick={() => setImageSrc("/studio-editor.jpg")}
@@ -828,7 +770,7 @@ function About() {
                   </button>
                 </div>
               </div>
-              <div className="grid grid-cols-4 gap-1">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
                 {[
                   { id: "noir-spotlight" as const, label: "Noir" },
                   { id: "carbon-crimson" as const, label: "Crimson" },
@@ -854,18 +796,18 @@ function About() {
         </div>
         <div className="lg:col-span-8 flex flex-col justify-center">
           <p className="font-mono text-xs text-accent uppercase tracking-[0.2em] mb-3">(b) About</p>
-          <h2 className="font-display text-5xl tracking-tight text-balance mb-6">
+          <h2 className="font-display text-3xl sm:text-5xl tracking-tight text-balance mb-4 sm:mb-6">
             The person behind the cuts
           </h2>
-          <p className="text-lg text-muted-foreground text-pretty max-w-[52ch]">
+          <p className="text-base sm:text-lg text-muted-foreground text-pretty max-w-[52ch]">
             I'm Navin — an editor obsessed with rhythm, pacing, and the perfect cut. My studio feels
             like a control room: screens, sound, and the occasional 3am render.
           </p>
-          <p className="mt-4 text-lg text-muted-foreground text-pretty max-w-[52ch]">
+          <p className="mt-4 text-base sm:text-lg text-muted-foreground text-pretty max-w-[52ch]">
             When I'm not editing, I'm hunting for the next track, studying transitions, or arguing
             about color grades with friends.
           </p>
-          <div className="mt-8 flex flex-wrap gap-2">
+          <div className="mt-6 sm:mt-8 flex flex-wrap gap-2">
             {["AMV", "Montage", "Transitions", "Color Grade", "Sound Design", "VFX"].map((tag) => (
               <span key={tag} className="px-3 py-1.5 rounded-full glass text-xs font-mono">
                 {tag}
@@ -873,10 +815,10 @@ function About() {
             ))}
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row flex-wrap items-center gap-3">
             <Link
               to="/about"
-              className="px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors inline-flex items-center gap-2 shadow-md group"
+              className="w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors inline-flex items-center gap-2 shadow-md group"
             >
               <span>Explore Full Creator Story</span>
               <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -885,7 +827,7 @@ function About() {
               href={YOUTUBE_URL}
               target="_blank"
               rel="noreferrer"
-              className="px-5 py-2.5 rounded-xl glass text-foreground text-sm font-medium hover:bg-foreground/10 transition-colors inline-flex items-center gap-1.5"
+              className="w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl glass text-foreground text-sm font-medium hover:bg-foreground/10 transition-colors inline-flex items-center gap-1.5"
             >
               <span>View Channel</span>
               <ExternalLink className="size-3.5" />
@@ -916,12 +858,14 @@ function Platforms({ subscribers }: { subscribers?: number }) {
   ];
 
   return (
-    <section id="platforms" className="max-w-7xl mx-auto px-6 py-16">
-      <div className="mb-8">
+    <section id="platforms" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <div className="mb-6 sm:mb-8">
         <p className="font-mono text-xs text-accent uppercase tracking-[0.2em] mb-2">
           (c) Platforms
         </p>
-        <h2 className="font-display text-5xl tracking-tight text-balance">Follow the signal</h2>
+        <h2 className="font-display text-3xl sm:text-5xl tracking-tight text-balance">
+          Follow the signal
+        </h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {platforms.map((platform) => (
@@ -930,10 +874,10 @@ function Platforms({ subscribers }: { subscribers?: number }) {
             href={platform.href}
             target="_blank"
             rel="noreferrer"
-            className="group glass rounded-2xl p-6 hover:-translate-y-1 transition-transform duration-300 block"
+            className="group glass rounded-2xl p-5 sm:p-6 hover:-translate-y-1 transition-transform duration-300 block"
           >
-            <div className="flex items-center justify-between mb-6">
-              <span className="font-display text-2xl">{platform.name}</span>
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <span className="font-display text-xl sm:text-2xl">{platform.name}</span>
               <span
                 className={`size-8 rounded-lg grid place-items-center font-mono text-xs ${
                   platform.name === "YouTube"
@@ -944,10 +888,12 @@ function Platforms({ subscribers }: { subscribers?: number }) {
                 {platform.tag}
               </span>
             </div>
-            <p className="font-display text-3xl tracking-tight break-all">{platform.value}</p>
+            <p className="font-display text-2xl sm:text-3xl tracking-tight break-all">
+              {platform.value}
+            </p>
             <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-2 font-mono">
-              <span className="size-1.5 rounded-full bg-accent animate-pulse-dot" />
-              {platform.detail}
+              <span className="size-1.5 rounded-full bg-accent animate-pulse-dot shrink-0" />
+              <span>{platform.detail}</span>
             </p>
           </a>
         ))}
@@ -958,24 +904,24 @@ function Platforms({ subscribers }: { subscribers?: number }) {
 
 function SubscribeCta() {
   return (
-    <section id="subscribe" className="max-w-7xl mx-auto px-6 py-16">
-      <div className="glass-strong rounded-3xl p-10 md:p-14 relative overflow-hidden">
+    <section id="subscribe" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <div className="glass-strong rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-14 relative overflow-hidden">
         <div className="pointer-events-none absolute -top-20 -right-20 size-80 rounded-full bg-primary/20 blur-[100px]" />
         <div className="relative">
           <p className="font-mono text-xs text-accent uppercase tracking-[0.2em] mb-3">Subscribe</p>
-          <h2 className="font-display text-5xl md:text-6xl tracking-tight text-balance max-w-[20ch]">
+          <h2 className="font-display text-3xl sm:text-5xl md:text-6xl tracking-tight text-balance max-w-[20ch]">
             New edits <span className="text-primary">dropping soon</span>.
           </h2>
-          <p className="mt-4 text-muted-foreground max-w-[48ch] text-pretty">
+          <p className="mt-4 text-sm sm:text-base text-muted-foreground max-w-[48ch] text-pretty">
             Short-form cuts, montages, and the occasional behind-the-scenes. Live synced frame by
             frame.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row flex-wrap gap-3">
             <a
               href={YOUTUBE_URL}
               target="_blank"
               rel="noreferrer"
-              className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors inline-flex items-center gap-2"
+              className="w-full sm:w-auto justify-center px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors inline-flex items-center gap-2"
             >
               <span>YouTube</span>
               <ExternalLink className="size-4" />
@@ -984,7 +930,7 @@ function SubscribeCta() {
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noreferrer"
-              className="px-6 py-3 rounded-lg glass font-medium hover:bg-foreground/10 transition-colors inline-flex items-center gap-2"
+              className="w-full sm:w-auto justify-center px-6 py-3 rounded-lg glass font-medium hover:bg-foreground/10 transition-colors inline-flex items-center gap-2"
             >
               <span>Instagram</span>
               <ExternalLink className="size-4" />
@@ -999,12 +945,14 @@ function SubscribeCta() {
 function Footer() {
   return (
     <footer className="border-t border-border">
-      <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="size-7 rounded-md bg-primary grid place-items-center">
+          <div className="size-7 rounded-md bg-primary grid place-items-center shrink-0">
             <span className="font-display text-sm text-primary-foreground">L</span>
           </div>
-          <span className="text-sm text-muted-foreground">© 2026 Luffy Editz — Realtime Sync</span>
+          <span className="text-xs sm:text-sm text-muted-foreground">
+            © 2026 Luffy Editz — Realtime Sync
+          </span>
         </div>
         <div className="flex items-center gap-6 text-xs text-muted-foreground">
           <Link to="/about" className="hover:text-foreground transition-colors font-medium">
@@ -1037,7 +985,7 @@ function VideoModal({ video, onClose }: { video: YouTubeVideo | null; onClose: (
 
   return (
     <Dialog open={!!video} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-3xl bg-card border-border p-0 overflow-hidden sm:rounded-2xl">
+      <DialogContent className="max-w-3xl w-[calc(100vw-1.5rem)] sm:w-full bg-card border-border p-0 overflow-hidden rounded-xl sm:rounded-2xl">
         <div className="aspect-video w-full bg-black">
           <iframe
             src={`https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1`}
@@ -1047,12 +995,12 @@ function VideoModal({ video, onClose }: { video: YouTubeVideo | null; onClose: (
             className="w-full h-full border-0"
           />
         </div>
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-left leading-snug">
+            <DialogTitle className="text-base sm:text-xl font-bold text-left leading-snug">
               {video.title}
             </DialogTitle>
-            <DialogDescription className="text-left font-mono text-xs text-muted-foreground flex flex-wrap items-center gap-3 pt-2">
+            <DialogDescription className="text-left font-mono text-xs text-muted-foreground flex flex-wrap items-center gap-2 sm:gap-3 pt-2">
               <span className="flex items-center gap-1">
                 <Eye className="size-3 text-accent" />
                 {formatCompact(video.views)} views
@@ -1064,7 +1012,7 @@ function VideoModal({ video, onClose }: { video: YouTubeVideo | null; onClose: (
             </DialogDescription>
           </DialogHeader>
 
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-border">
+          <div className="mt-4 sm:mt-6 flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-border">
             <span className="font-mono text-xs text-muted-foreground">@LuffyEditzInsta</span>
             <a
               href={video.link}
@@ -1102,18 +1050,24 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-[#020203] text-foreground font-body relative overflow-hidden">
-      {/* Dark Studio Architectural Background Image + Selected Black Style */}
+      {/* Full-Viewport Luffy Background Image + Selected Style Overlay */}
       <div className={`pointer-events-none fixed inset-0 ${bgClass} transition-all duration-500`} />
       <div
-        className="pointer-events-none fixed inset-0 opacity-[0.15] mix-blend-luminosity bg-cover bg-center bg-no-repeat"
+        className={`pointer-events-none fixed inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700 ${
+          bgStyle === "noir-beams"
+            ? "opacity-[0.38] contrast-115 saturate-110"
+            : bgStyle === "carbon"
+              ? "opacity-[0.52] contrast-110 saturate-125"
+              : bgStyle === "obsidian"
+                ? "opacity-[0.32] grayscale contrast-125"
+                : "opacity-[0.18] grayscale contrast-150"
+        }`}
         style={{
-          backgroundImage: `url('/camera-lens.jpg')`,
-          maskImage: "radial-gradient(ellipse 85% 65% at 50% 20%, black 15%, transparent 75%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse 85% 65% at 50% 20%, black 15%, transparent 75%)",
+          backgroundImage: `url('/assets/aistudio/image_759ccab2.png')`,
         }}
       />
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,transparent_15%,#020203_90%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-gradient-to-b from-black/55 via-[#020203]/70 to-[#020203]/95" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_20%,transparent_20%,#020203_92%)]" />
 
       <Toaster position="bottom-right" />
 
@@ -1129,7 +1083,7 @@ function Index() {
         <Hero
           onPlayVideo={(v) => setSelectedVideo(v)}
           latestVideo={latestVideo}
-          avatarUrl={data?.thumbnailUrl || "/studio-editor.jpg"}
+          avatarUrl={data?.thumbnailUrl || "/assets/aistudio/image_759ccab2.png"}
         />
         <StatsStrip
           subscribers={data?.subscribers}

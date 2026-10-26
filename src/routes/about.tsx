@@ -1,23 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { toast } from "sonner";
-import {
-  ArrowLeft,
-  Sparkles,
-  Film,
-  Sliders,
-  Music,
-  Monitor,
-  Flame,
-  Award,
-  ExternalLink,
-  CheckCircle2,
-  Clock,
-  Layers,
-  Zap,
-  Camera,
-  Upload,
-} from "lucide-react";
+import { ArrowLeft, Film, Sliders, Music, ExternalLink, CheckCircle2, Zap } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 
 const YOUTUBE_URL = "https://www.youtube.com/@LuffyEditzInsta";
@@ -57,19 +40,19 @@ function AboutNav({
   onChangeBgStyle: (style: BackdropStyle) => void;
 }) {
   const styles: Array<{ id: BackdropStyle; label: string }> = [
-    { id: "noir-beams", label: "Noir Beams" },
-    { id: "carbon", label: "Carbon" },
-    { id: "obsidian", label: "Matrix" },
-    { id: "oled", label: "OLED Black" },
+    { id: "noir-beams", label: "Luffy Cinema" },
+    { id: "carbon", label: "Luffy Vivid" },
+    { id: "obsidian", label: "Luffy Noir" },
+    { id: "oled", label: "Dark Minimal" },
   ];
 
   return (
     <nav className="sticky top-0 z-50 glass-strong">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <Link
             to="/"
-            className="flex items-center gap-2 text-sm font-mono text-muted-foreground hover:text-foreground transition-colors group"
+            className="flex items-center gap-2 text-xs sm:text-sm font-mono text-muted-foreground hover:text-foreground transition-colors group shrink-0"
           >
             <span className="size-8 rounded-lg glass grid place-items-center group-hover:border-primary/50 transition-colors">
               <ArrowLeft className="size-4 group-hover:-translate-x-0.5 transition-transform" />
@@ -77,11 +60,13 @@ function AboutNav({
             <span className="hidden sm:inline">Back to Studio</span>
           </Link>
           <span className="text-border hidden sm:inline">|</span>
-          <div className="flex items-center gap-2">
-            <div className="size-7 rounded-md bg-primary grid place-items-center">
+          <div className="flex items-center gap-2 truncate">
+            <div className="size-7 rounded-md bg-primary grid place-items-center shrink-0">
               <span className="font-display text-sm text-primary-foreground">L</span>
             </div>
-            <span className="font-display text-lg tracking-tight">LUFFY EDITZ</span>
+            <span className="font-display text-base sm:text-lg tracking-tight truncate">
+              LUFFY EDITZ
+            </span>
           </div>
         </div>
 
@@ -105,7 +90,7 @@ function AboutNav({
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <Link
             to="/"
             className="hidden md:inline-flex text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -116,12 +101,33 @@ function AboutNav({
             href={YOUTUBE_URL}
             target="_blank"
             rel="noreferrer"
-            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm inline-flex items-center gap-1.5"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-primary text-primary-foreground text-xs sm:text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm inline-flex items-center gap-1.5"
           >
             <span>Subscribe</span>
             <ExternalLink className="size-3.5" />
           </a>
         </div>
+      </div>
+
+      {/* Mobile Backdrop Switcher */}
+      <div className="lg:hidden border-t border-white/10 bg-black/60 px-4 py-2 flex items-center gap-1.5 overflow-x-auto">
+        <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground shrink-0 mr-1">
+          Style:
+        </span>
+        {styles.map((s) => (
+          <button
+            key={s.id}
+            type="button"
+            onClick={() => onChangeBgStyle(s.id)}
+            className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-colors cursor-pointer shrink-0 ${
+              bgStyle === s.id
+                ? "bg-white/15 text-white font-medium"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {s.label}
+          </button>
+        ))}
       </div>
     </nav>
   );
@@ -130,8 +136,6 @@ function AboutNav({
 function AboutHero() {
   const [imageSrc, setImageSrc] = useState<string>("/studio-editor.jpg");
   const [portraitStyle, setPortraitStyle] = useState<PortraitStyle>("noir-spotlight");
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const cached = localStorage.getItem("luffy_creator_portrait");
@@ -140,76 +144,13 @@ function AboutHero() {
     }
   }, []);
 
-  const handleProcessFile = (file: File) => {
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please select a valid image file");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64 = e.target?.result as string;
-      if (base64) {
-        setImageSrc(base64);
-        try {
-          localStorage.setItem("luffy_creator_portrait", base64);
-        } catch (storageErr) {
-          console.warn("Could not save to localStorage", storageErr);
-        }
-        toast.info("Applying exact image...");
-
-        try {
-          const res = await fetch("/api/save-portrait", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ base64 }),
-          });
-          if (res.ok) {
-            toast.success("Exact image replaced and saved!");
-          } else {
-            toast.success("Exact portrait applied!");
-          }
-        } catch {
-          toast.success("Exact portrait applied!");
-        }
-      }
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const onDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) handleProcessFile(file);
-  };
-
   return (
-    <section className="relative max-w-7xl mx-auto px-6 pt-12 pb-16">
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleProcessFile(file);
-        }}
-      />
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    <section className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-12 sm:pb-16">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         {/* Creator Portrait */}
-        <div className="lg:col-span-5">
+        <div className="lg:col-span-5 max-w-sm mx-auto lg:max-w-none w-full">
           <div className="relative group">
-            <div
-              onDragOver={(e) => {
-                e.preventDefault();
-                setIsDragging(true);
-              }}
-              onDragLeave={() => setIsDragging(false)}
-              onDrop={onDrop}
-              className={`w-full aspect-[4/5] rounded-3xl overflow-hidden bg-black outline-1 -outline-offset-1 outline-white/15 relative shadow-2xl transition-all ${
-                isDragging ? "ring-4 ring-primary ring-offset-4 ring-offset-background" : ""
-              }`}
-            >
+            <div className="w-full aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden bg-black outline-1 -outline-offset-1 outline-white/15 relative shadow-2xl transition-all">
               {/* Dynamic Black Studio Backdrop Layer behind image */}
               <div
                 className={`pointer-events-none absolute inset-0 z-0 ${
@@ -252,59 +193,42 @@ function AboutHero() {
                 <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_35%,#000000_95%)]" />
               )}
 
-              <div className="pointer-events-none absolute inset-0 z-10 ring-1 ring-inset ring-white/10 rounded-3xl" />
+              <div className="pointer-events-none absolute inset-0 z-10 ring-1 ring-inset ring-white/10 rounded-2xl sm:rounded-3xl" />
 
               {/* Top studio status text */}
-              <div className="absolute top-4 left-4 z-20 flex items-center gap-2 text-xs font-mono text-zinc-300 bg-black/75 px-3 py-1 rounded-md border border-white/10 backdrop-blur-md">
+              <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 flex items-center gap-2 text-[11px] sm:text-xs font-mono text-zinc-300 bg-black/75 px-3 py-1 rounded-md border border-white/10 backdrop-blur-md">
                 <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 <span>Creator & Director</span>
               </div>
 
-              {/* Replace image quick action on hover */}
-              <div className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="px-3 py-1.5 rounded-xl bg-black/85 hover:bg-black text-white text-xs font-mono border border-white/20 flex items-center gap-1.5 shadow-lg backdrop-blur-md cursor-pointer transition-colors"
-                  title="Upload or replace with exact photo"
-                >
-                  <Camera className="size-3.5 text-accent" />
-                  <span>Upload Photo</span>
-                </button>
-              </div>
-
-              {/* Drag over overlay */}
-              {isDragging && (
-                <div className="absolute inset-0 bg-black/85 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-30">
-                  <Upload className="size-10 text-primary animate-bounce mb-3" />
-                  <p className="font-display text-xl text-white">Drop Photo Here</p>
-                  <p className="text-xs text-muted-foreground font-mono mt-1">
-                    Applies dark studio grading automatically
-                  </p>
-                </div>
-              )}
-
-              <div className="absolute bottom-5 left-5 right-5 z-20 flex items-center justify-between text-xs font-mono">
+              <div className="absolute bottom-4 left-4 right-4 sm:bottom-5 sm:left-5 sm:right-5 z-20 flex items-center justify-between text-xs font-mono">
                 <div>
                   <p className="text-base font-bold text-white font-body">Navin</p>
                   <p className="text-xs text-zinc-400">@LuffyEditzInsta</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/15 font-semibold shadow-md flex items-center gap-1.5 cursor-pointer transition-colors backdrop-blur-md"
-                >
-                  <Camera className="size-3.5" />
-                  <span>Change Photo</span>
-                </button>
+                <span className="px-2.5 py-1 rounded-md bg-black/75 border border-white/15 text-zinc-300 text-[11px] backdrop-blur-md">
+                  Studio Cut
+                </span>
               </div>
             </div>
 
             {/* Interactive Black Backdrop & Visual Style Selector */}
-            <div className="mt-4 p-3 rounded-2xl bg-black/80 border border-white/10 backdrop-blur-md space-y-2.5">
-              <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground px-1">
-                <span>BLACK STUDIO STYLE</span>
+            <div className="mt-3 sm:mt-4 p-3 rounded-2xl bg-black/80 border border-white/10 backdrop-blur-md space-y-2.5">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-muted-foreground px-1">
+                <span>VISUAL PRESET</span>
                 <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setImageSrc("/assets/aistudio/image_759ccab2.png")}
+                    className={`hover:text-white transition-colors cursor-pointer ${
+                      imageSrc === "/assets/aistudio/image_759ccab2.png"
+                        ? "text-primary font-semibold"
+                        : ""
+                    }`}
+                  >
+                    Luffy Art
+                  </button>
+                  <span>·</span>
                   <button
                     type="button"
                     onClick={() => setImageSrc("/studio-editor.jpg")}
@@ -326,7 +250,7 @@ function AboutHero() {
                   </button>
                 </div>
               </div>
-              <div className="grid grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                 {[
                   { id: "noir-spotlight" as const, label: "Noir Light" },
                   { id: "carbon-crimson" as const, label: "Crimson Dark" },
@@ -357,16 +281,16 @@ function AboutHero() {
             <span className="font-mono text-xs text-accent uppercase tracking-[0.2em]">
               The Story
             </span>
-            <span className="h-px w-12 bg-border" />
+            <span className="h-px w-8 sm:w-12 bg-border" />
             <span className="font-mono text-xs text-muted-foreground">About the Artist</span>
           </div>
 
-          <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-[0.95] mb-6">
+          <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl tracking-tight leading-[0.95] mb-6">
             BEHIND EVERY CUT <br />
             <span className="text-primary">LIES A RHYTHM.</span>
           </h1>
 
-          <div className="space-y-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
+          <div className="space-y-4 text-sm sm:text-lg text-muted-foreground leading-relaxed">
             <p>
               I'm <span className="text-foreground font-medium">Navin</span>, a video editor,
               content creator, and visual storyteller obsessed with timing, energy, and cinematic
@@ -385,12 +309,12 @@ function AboutHero() {
             </p>
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-4 pt-4 border-t border-border">
+          <div className="mt-8 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 pt-4 border-t border-border">
             <a
               href={YOUTUBE_URL}
               target="_blank"
               rel="noreferrer"
-              className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors inline-flex items-center gap-2 shadow-md"
+              className="w-full sm:w-auto justify-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors inline-flex items-center gap-2 shadow-md"
             >
               <span>YouTube Channel</span>
               <ExternalLink className="size-4" />
@@ -399,7 +323,7 @@ function AboutHero() {
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noreferrer"
-              className="px-6 py-3 rounded-xl glass text-foreground font-medium hover:bg-foreground/10 transition-colors inline-flex items-center gap-2"
+              className="w-full sm:w-auto justify-center px-6 py-3 rounded-xl glass text-foreground font-medium hover:bg-foreground/10 transition-colors inline-flex items-center gap-2"
             >
               <span>Instagram Profile</span>
               <ExternalLink className="size-4" />
@@ -440,19 +364,19 @@ function PhilosophySection() {
   ];
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-16 border-t border-border/60">
-      <div className="mb-12">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 border-t border-border/60">
+      <div className="mb-8 sm:mb-12">
         <p className="font-mono text-xs text-accent uppercase tracking-[0.2em] mb-2">Methodology</p>
-        <h2 className="font-display text-4xl sm:text-5xl tracking-tight">The 4 Golden Rules</h2>
+        <h2 className="font-display text-3xl sm:text-5xl tracking-tight">The 4 Golden Rules</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {principles.map((p) => {
           const Icon = p.icon;
           return (
             <div
               key={p.num}
-              className="glass rounded-2xl p-6 relative group hover:-translate-y-1 transition-transform duration-300"
+              className="glass rounded-2xl p-5 sm:p-6 relative group hover:-translate-y-1 transition-transform duration-300"
             >
               <div className="flex items-center justify-between mb-4">
                 <span className="font-mono text-2xl font-bold text-primary">{p.num}</span>
@@ -483,16 +407,16 @@ function StudioToolkit() {
   ];
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-16 border-t border-border/60">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 border-t border-border/60">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
         <div className="lg:col-span-5">
           <p className="font-mono text-xs text-accent uppercase tracking-[0.2em] mb-2">
             The Arsenal
           </p>
-          <h2 className="font-display text-4xl sm:text-5xl tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-5xl tracking-tight mb-4">
             Production Software & Tools
           </h2>
-          <p className="text-muted-foreground leading-relaxed">
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
             High-end editing demands software that never bottlenecks creativity. Every project flows
             through a multi-stage pipeline from raw timeline cut to sound mixing and final master
             export.
@@ -500,7 +424,7 @@ function StudioToolkit() {
         </div>
 
         <div className="lg:col-span-7">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {tools.map((tool) => (
               <div
                 key={tool.name}
@@ -522,27 +446,27 @@ function StudioToolkit() {
 
 function ConnectCta() {
   return (
-    <section className="max-w-7xl mx-auto px-6 py-16">
-      <div className="glass-strong rounded-3xl p-8 sm:p-14 relative overflow-hidden text-center sm:text-left">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <div className="glass-strong rounded-2xl sm:rounded-3xl p-6 sm:p-14 relative overflow-hidden text-center sm:text-left">
         <div className="pointer-events-none absolute -top-24 -right-24 size-80 rounded-full bg-primary/20 blur-[120px]" />
-        <div className="relative flex flex-col sm:flex-row items-center justify-between gap-8">
+        <div className="relative flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8">
           <div>
             <p className="font-mono text-xs text-accent uppercase tracking-[0.2em] mb-2">
               Get In Touch
             </p>
-            <h2 className="font-display text-4xl sm:text-5xl tracking-tight max-w-[20ch]">
+            <h2 className="font-display text-3xl sm:text-5xl tracking-tight max-w-[20ch] mx-auto sm:mx-0">
               Let's create something <span className="text-primary">unforgettable</span>.
             </h2>
-            <p className="mt-3 text-muted-foreground max-w-[45ch]">
+            <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-[45ch] mx-auto sm:mx-0">
               Open for collaborations, video edits, and creative projects. Follow along on the
               journey.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 shrink-0">
+          <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 sm:gap-4 w-full sm:w-auto shrink-0">
             <Link
               to="/"
-              className="px-6 py-3 rounded-xl glass font-medium text-foreground hover:bg-foreground/10 transition-colors"
+              className="w-full sm:w-auto text-center px-6 py-3 rounded-xl glass font-medium text-foreground hover:bg-foreground/10 transition-colors"
             >
               Explore Feed
             </Link>
@@ -550,7 +474,7 @@ function ConnectCta() {
               href={YOUTUBE_URL}
               target="_blank"
               rel="noreferrer"
-              className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors shadow-lg"
+              className="w-full sm:w-auto text-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors shadow-lg"
             >
               Subscribe on YouTube
             </a>
@@ -564,7 +488,7 @@ function ConnectCta() {
 function AboutFooter() {
   return (
     <footer className="border-t border-border">
-      <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
           <Link to="/" className="text-foreground hover:text-primary transition-colors font-medium">
             ← Home Studio
@@ -609,18 +533,24 @@ function AboutPage() {
 
   return (
     <div className="min-h-screen bg-[#020203] text-foreground font-body relative overflow-hidden">
-      {/* Dark Studio Architectural Background Image + Selected Black Style */}
+      {/* Full-Viewport Luffy Background Image + Selected Style Overlay */}
       <div className={`pointer-events-none fixed inset-0 ${bgClass} transition-all duration-500`} />
       <div
-        className="pointer-events-none fixed inset-0 opacity-[0.16] mix-blend-luminosity bg-cover bg-center bg-no-repeat"
+        className={`pointer-events-none fixed inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700 ${
+          bgStyle === "noir-beams"
+            ? "opacity-[0.38] contrast-115 saturate-110"
+            : bgStyle === "carbon"
+              ? "opacity-[0.52] contrast-110 saturate-125"
+              : bgStyle === "obsidian"
+                ? "opacity-[0.32] grayscale contrast-125"
+                : "opacity-[0.18] grayscale contrast-150"
+        }`}
         style={{
-          backgroundImage: `url('/camera-lens.jpg')`,
-          maskImage: "radial-gradient(ellipse 80% 70% at 50% 25%, black 20%, transparent 80%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse 80% 70% at 50% 25%, black 20%, transparent 80%)",
+          backgroundImage: `url('/assets/aistudio/image_759ccab2.png')`,
         }}
       />
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,transparent_10%,#020203_90%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-gradient-to-b from-black/55 via-[#020203]/70 to-[#020203]/95" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_20%,transparent_20%,#020203_92%)]" />
 
       <div className="relative z-10">
         <Toaster position="bottom-right" />

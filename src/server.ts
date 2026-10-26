@@ -51,22 +51,26 @@ export default {
       if (request.method === "POST" && url.pathname === "/api/save-portrait") {
         try {
           const body = (await request.json()) as { base64?: string };
-          if (body.base64) {
-            const fs = await import("fs/promises");
-            const cleanBase64 = body.base64.replace(/^data:image\/\w+;base64,/, "");
-            const buffer = Buffer.from(cleanBase64, "base64");
-            await fs.writeFile("public/about-portrait.jpg", buffer);
-            await fs.writeFile("public/nk.jpeg", buffer);
-            await fs.writeFile("src/assets/about-portrait.jpg", buffer);
-            return new Response(JSON.stringify({ ok: true }), {
-              status: 200,
-              headers: { "content-type": "application/json" },
-            });
+          if (body.base64 && !process.env.VERCEL) {
+            try {
+              const fs = await import("fs/promises");
+              const cleanBase64 = body.base64.replace(/^data:image\/\w+;base64,/, "");
+              const buffer = Buffer.from(cleanBase64, "base64");
+              await fs.writeFile("public/about-portrait.jpg", buffer);
+              await fs.writeFile("public/nk.jpeg", buffer);
+              await fs.writeFile("src/assets/about-portrait.jpg", buffer);
+            } catch {
+              // Ignore read-only filesystem errors in serverless environments
+            }
           }
+          return new Response(JSON.stringify({ ok: true }), {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          });
         } catch (apiErr) {
           console.error("Save portrait API error:", apiErr);
-          return new Response(JSON.stringify({ error: String(apiErr) }), {
-            status: 500,
+          return new Response(JSON.stringify({ ok: false, error: String(apiErr) }), {
+            status: 200,
             headers: { "content-type": "application/json" },
           });
         }
