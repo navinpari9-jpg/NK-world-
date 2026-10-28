@@ -6,6 +6,10 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+if (process.argv.includes("build") && !process.argv.includes("development")) {
+  process.env.NODE_ENV = "production";
+}
+
 export default defineConfig({
   nitro: {
     preset: "vercel",

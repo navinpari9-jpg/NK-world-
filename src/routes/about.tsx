@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Film, Sliders, Music, ExternalLink, CheckCircle2, Zap } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
+import luffyWallpaper from "@/assets/luffy-wallpaper.jpg";
+import navinPortrait from "@/assets/navin-portrait.png";
 
 const YOUTUBE_URL = "https://www.youtube.com/@LuffyEditzInsta";
 const INSTAGRAM_URL = "https://www.instagram.com/Luffy_editz_26";
@@ -21,7 +23,10 @@ export const Route = createFileRoute("/about")({
         content:
           "Meet Navin — the video editor, creator, and motion designer behind @LuffyEditzInsta.",
       },
-      { property: "og:image", content: "/about-portrait.jpg" },
+      {
+        property: "og:image",
+        content: "/navin-portrait.png",
+      },
       { property: "og:type", content: "profile" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -32,6 +37,8 @@ export const Route = createFileRoute("/about")({
 type BackdropStyle = "noir-beams" | "carbon" | "obsidian" | "oled";
 type PortraitStyle = "noir-spotlight" | "carbon-crimson" | "monochrome-rim" | "pure-void";
 
+const DEFAULT_CREATOR_IMAGE = navinPortrait;
+
 function AboutNav({
   bgStyle,
   onChangeBgStyle,
@@ -40,10 +47,10 @@ function AboutNav({
   onChangeBgStyle: (style: BackdropStyle) => void;
 }) {
   const styles: Array<{ id: BackdropStyle; label: string }> = [
-    { id: "noir-beams", label: "Luffy Cinema" },
-    { id: "carbon", label: "Luffy Vivid" },
-    { id: "obsidian", label: "Luffy Noir" },
-    { id: "oled", label: "Dark Minimal" },
+    { id: "noir-beams", label: "Lite Black 4K" },
+    { id: "carbon", label: "4K Vivid" },
+    { id: "obsidian", label: "Lite Black Mono" },
+    { id: "oled", label: "Soft Charcoal" },
   ];
 
   return (
@@ -134,15 +141,7 @@ function AboutNav({
 }
 
 function AboutHero() {
-  const [imageSrc, setImageSrc] = useState<string>("/studio-editor.jpg");
   const [portraitStyle, setPortraitStyle] = useState<PortraitStyle>("noir-spotlight");
-
-  useEffect(() => {
-    const cached = localStorage.getItem("luffy_creator_portrait");
-    if (cached) {
-      setImageSrc(cached);
-    }
-  }, []);
 
   return (
     <section className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-12 sm:pb-16">
@@ -165,16 +164,16 @@ function AboutHero() {
               />
 
               <img
-                src={imageSrc}
-                alt="Navin — The Creator"
-                className={`relative z-10 w-full h-full object-cover object-center group-hover:scale-105 transition-all duration-700 ease-out ${
+                src={DEFAULT_CREATOR_IMAGE}
+                alt="Navin — Video Editor & Creator (Luffy Editz)"
+                className={`relative z-10 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-all duration-700 ease-out ${
                   portraitStyle === "noir-spotlight"
-                    ? "grayscale contrast-125 brightness-95"
+                    ? "contrast-110 brightness-100"
                     : portraitStyle === "carbon-crimson"
-                      ? "contrast-125 saturate-75 brightness-90"
+                      ? "contrast-120 saturate-110 brightness-95"
                       : portraitStyle === "monochrome-rim"
-                        ? "grayscale contrast-150 brightness-90"
-                        : "contrast-115 brightness-90"
+                        ? "grayscale contrast-125 brightness-100"
+                        : "contrast-105 brightness-100"
                 }`}
                 referrerPolicy="no-referrer"
               />
@@ -214,41 +213,9 @@ function AboutHero() {
 
             {/* Interactive Black Backdrop & Visual Style Selector */}
             <div className="mt-3 sm:mt-4 p-3 rounded-2xl bg-black/80 border border-white/10 backdrop-blur-md space-y-2.5">
-              <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-muted-foreground px-1">
-                <span>VISUAL PRESET</span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setImageSrc("/assets/aistudio/image_759ccab2.png")}
-                    className={`hover:text-white transition-colors cursor-pointer ${
-                      imageSrc === "/assets/aistudio/image_759ccab2.png"
-                        ? "text-primary font-semibold"
-                        : ""
-                    }`}
-                  >
-                    Luffy Art
-                  </button>
-                  <span>·</span>
-                  <button
-                    type="button"
-                    onClick={() => setImageSrc("/studio-editor.jpg")}
-                    className={`hover:text-white transition-colors cursor-pointer ${
-                      imageSrc === "/studio-editor.jpg" ? "text-primary font-semibold" : ""
-                    }`}
-                  >
-                    Studio Rig
-                  </button>
-                  <span>·</span>
-                  <button
-                    type="button"
-                    onClick={() => setImageSrc("/camera-lens.jpg")}
-                    className={`hover:text-white transition-colors cursor-pointer ${
-                      imageSrc === "/camera-lens.jpg" ? "text-primary font-semibold" : ""
-                    }`}
-                  >
-                    Dark Lens
-                  </button>
-                </div>
+              <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground px-1">
+                <span>STUDIO LIGHTING</span>
+                <span className="text-zinc-400">Navin • Portrait</span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                 {[
@@ -532,25 +499,43 @@ function AboutPage() {
           : "bg-oled-void";
 
   return (
-    <div className="min-h-screen bg-[#020203] text-foreground font-body relative overflow-hidden">
-      {/* Full-Viewport Luffy Background Image + Selected Style Overlay */}
-      <div className={`pointer-events-none fixed inset-0 ${bgClass} transition-all duration-500`} />
-      <div
-        className={`pointer-events-none fixed inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700 ${
-          bgStyle === "noir-beams"
-            ? "opacity-[0.38] contrast-115 saturate-110"
-            : bgStyle === "carbon"
-              ? "opacity-[0.52] contrast-110 saturate-125"
-              : bgStyle === "obsidian"
-                ? "opacity-[0.32] grayscale contrast-125"
-                : "opacity-[0.18] grayscale contrast-150"
-        }`}
-        style={{
-          backgroundImage: `url('/assets/aistudio/image_759ccab2.png')`,
-        }}
-      />
-      <div className="pointer-events-none fixed inset-0 bg-gradient-to-b from-black/55 via-[#020203]/70 to-[#020203]/95" />
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_20%,transparent_20%,#020203_92%)]" />
+    <div className="min-h-screen bg-[#16181e] text-foreground font-body relative overflow-x-hidden">
+      {/* 4K UHD Hardware Unsharp & Micro-Contrast Filter */}
+      <svg className="sr-only" aria-hidden="true">
+        <defs>
+          <filter id="uhd-4k-crisp" colorInterpolationFilters="sRGB">
+            <feConvolveMatrix
+              order="3 3"
+              kernelMatrix="0 -0.28 0 -0.28 2.12 -0.28 0 -0.28 0"
+              preserveAlpha="true"
+            />
+          </filter>
+        </defs>
+      </svg>
+
+      {/* Full-Viewport 4K UHD Luffy Background Image + Lite Black Theme Overlay */}
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#16181e]">
+        <div className={`absolute inset-0 ${bgClass} transition-all duration-500`} />
+        <img
+          src={luffyWallpaper}
+          alt=""
+          aria-hidden="true"
+          fetchPriority="high"
+          decoding="sync"
+          style={{ filter: "url(#uhd-4k-crisp)" }}
+          className={`w-full h-full object-cover object-[center_42%] transition-all duration-700 ${
+            bgStyle === "noir-beams"
+              ? "opacity-65 contrast-108 saturate-95"
+              : bgStyle === "carbon"
+                ? "opacity-85 contrast-105 saturate-115"
+                : bgStyle === "obsidian"
+                  ? "opacity-55 grayscale contrast-115"
+                  : "opacity-35 grayscale contrast-120"
+          }`}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#181a20]/60 via-[#16181e]/45 to-[#14161c]/88" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(24,26,32,0.15)_25%,rgba(20,22,28,0.8)_100%)]" />
+      </div>
 
       <div className="relative z-10">
         <Toaster position="bottom-right" />
